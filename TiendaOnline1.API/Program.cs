@@ -1,25 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using TiendaOnline.API.Data;
 var builder = WebApplication.CreateBuilder(args);
-// Sólo forzar la URL de escucha en desarrollo local. En entornos de producción (Railway, Azure, etc.)
-// el host/proxy asignará la URL/puerto adecuados y forzar localhost puede provocar errores de binding.
-if (builder.Environment.IsDevelopment())
-{
-    builder.WebHost.UseUrls("https://localhost:7164");
-}
-else
-{
-    // En plataformas como Railway se nos asigna un puerto en la variable de entorno PORT.
-    // Configuramos Kestrel para escuchar en cualquier IP en ese puerto (HTTP) para evitar errores de bind a localhost.
-    var portEnv = Environment.GetEnvironmentVariable("PORT");
-    if (!string.IsNullOrEmpty(portEnv) && int.TryParse(portEnv, out var port))
-    {
-        builder.WebHost.ConfigureKestrel(options =>
-        {
-            options.ListenAnyIP(port);
-        });
-    }
-}
+// Forzar que la app escuche en la URL HTTPS especificada (ajusta el puerto si es necesario)
+builder.WebHost.UseUrls("https://localhost:7164");
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
