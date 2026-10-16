@@ -1,0 +1,61 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TiendaOnline.API.Data;
+using TiendaOnline.API.Models;
+
+namespace TiendaOnline1.API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class MetodoPagoController : ControllerBase
+    {
+        private readonly TiendaOnlineDbContext _context;
+
+        public MetodoPagoController(TiendaOnlineDbContext context)
+        {
+            _context = context;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var list = await _context.MetodosPago.ToListAsync();
+            return Ok(list);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            var item = await _context.MetodosPago.FindAsync(id);
+            if (item == null) return NotFound();
+            return Ok(item);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(MetodoPago model)
+        {
+            _context.MetodosPago.Add(model);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(Get), new { id = model.IdMetodoPago }, model);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, MetodoPago model)
+        {
+            if (id != model.IdMetodoPago) return BadRequest();
+            _context.Entry(model).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var item = await _context.MetodosPago.FindAsync(id);
+            if (item == null) return NotFound();
+            _context.MetodosPago.Remove(item);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+    }
+}
