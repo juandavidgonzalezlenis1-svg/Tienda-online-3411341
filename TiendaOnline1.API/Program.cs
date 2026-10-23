@@ -1,8 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using TiendaOnline.API.Data;
 var builder = WebApplication.CreateBuilder(args);
-// Forzar que la app escuche en la URL HTTPS especificada (ajusta el puerto si es necesario)
-builder.WebHost.UseUrls("https://localhost:7164");
+var port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrEmpty(port))
+{
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+}
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
